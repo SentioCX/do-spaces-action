@@ -29,6 +29,9 @@ inputs:
   permission:
     description: 'DO secret key'
     required: false
+  gzip_file_types:
+    description: 'Gzip file types'
+    required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'

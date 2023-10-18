@@ -39,6 +39,11 @@ const config = {
 	permission: getInput({
 		key: 'permission',
 		default: 'public-read'
+	}),
+	gzipFileTypes: getInput({
+		key: 'gzip_file_types',
+		type: 'array',
+		default: []
 	})
 }
 

@@ -6,6 +6,7 @@ class S3Interface {
 	constructor(config) {
 		this.bucket = config.bucket
 		this.permission = config.permission
+		this.gzipFileTypes = config.gzipFileTypes
 
 		const spacesEndpoint = new AWS.Endpoint(`${ config.region }.digitaloceanspaces.com`)
 		const s3 = new AWS.S3({
@@ -22,13 +23,22 @@ class S3Interface {
 
 			const fileStream = fs.createReadStream(file)
 
+			const contentType = lookup(file) || 'text/plain'
 			const options = {
 				Body: fileStream,
 				Bucket: this.bucket,
 				Key: path.replace(/\\/g, '/'),
 				ACL: this.permission,
-				ContentType: lookup(file) || 'text/plain'
+				ContentType: contentType
 			}
+
+			const isMatchingGzipFileType = this.gzipFileTypes.some(
+        (fileType) => fileType === contentType
+			)
+			if (isMatchingGzipFileType) {
+				options.ContentEncoding = 'gzip'
+			}
+
 
 			this.s3.upload(options, (err, data) => {
 				if (err) {
