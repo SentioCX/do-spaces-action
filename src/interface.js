@@ -15,7 +15,9 @@ class S3Interface {
 		core.debug(`Using permission ${ this.permission }`)
 		core.debug(`Using gzip file types ${ this.gzipFileTypes }`)
 
-		const spacesEndpoint = new URL(`${ config.region }.digitaloceanspaces.com`)
+		const spacesEndpoint = new URL(
+      `https://${ config.region }.digitaloceanspaces.com`
+		)
 		const s3 = new S3({
 			endpoint: spacesEndpoint,
 			credentials: {
@@ -39,8 +41,12 @@ class S3Interface {
 			ContentType: contentType
 		}
 
-		const isMatchingGzipFileType = this.gzipFileTypes.some((fileType) => fileType === contentType)
-		core.debug(`File name = ${ file } with content type = ${ contentType } is matching gzip file type ${ isMatchingGzipFileType }`)
+		const isMatchingGzipFileType = this.gzipFileTypes.some(
+      (fileType) => fileType === contentType
+		)
+		core.debug(
+      `File name = ${ file } with content type = ${ contentType } is matching gzip file type ${ isMatchingGzipFileType }`
+		)
 		if (isMatchingGzipFileType) {
 			params.ContentEncoding = 'gzip'
 		}

@@ -38154,10 +38154,11 @@ class S3Interface {
 		core.debug(`Using permission ${ this.permission }`)
 		core.debug(`Using gzip file types ${ this.gzipFileTypes }`)
 
-		const spacesEndpoint = new URL(`${ config.region }.digitaloceanspaces.com`)
+		const spacesEndpoint = new URL(
+      `https://${ config.region }.digitaloceanspaces.com`
+		)
 		const s3 = new S3({
 			endpoint: spacesEndpoint,
-
 			credentials: {
 				accessKeyId: config.access_key,
 				secretAccessKey: config.secret_key
@@ -38179,8 +38180,12 @@ class S3Interface {
 			ContentType: contentType
 		}
 
-		const isMatchingGzipFileType = this.gzipFileTypes.some((fileType) => fileType === contentType)
-		core.debug(`File name = ${ file } with content type = ${ contentType } is matching gzip file type ${ isMatchingGzipFileType }`)
+		const isMatchingGzipFileType = this.gzipFileTypes.some(
+      (fileType) => fileType === contentType
+		)
+		core.debug(
+      `File name = ${ file } with content type = ${ contentType } is matching gzip file type ${ isMatchingGzipFileType }`
+		)
 		if (isMatchingGzipFileType) {
 			params.ContentEncoding = 'gzip'
 		}
@@ -38467,13 +38472,13 @@ const run = async () => {
 		const fileName = path.basename(config.source)
 		const s3Path = path.join(outDir, fileName)
 
-		core.debug('Uploading file: ' + s3Path)
+		core.debug(`Uploading file: ${ s3Path }`)
 		await s3.upload(config.source, s3Path)
 
 		if (shouldVersion) {
 			const s3PathLatest = path.join(config.outDir, 'latest', fileName)
 
-			core.debug('Uploading file to latest: ' + s3PathLatest)
+			core.debug(`Uploading file to latest: ${ s3PathLatest }`)
 			await s3.upload(config.source, s3PathLatest)
 		}
 	} else {
@@ -38489,13 +38494,13 @@ const run = async () => {
 				if (stat.isFile()) {
 					const s3Path = path.join(outDir, path.relative(config.source, fullPath))
 
-					core.debug('Uploading file: ' + s3Path)
+					core.debug(`Uploading file: ${s3Path}`)
 					await s3.upload(fullPath, s3Path)
 
 					if (shouldVersion) {
 						const s3PathLatest = path.join(config.outDir, 'latest', path.relative(config.source, fullPath))
 
-						core.debug('Uploading file to latest: ' + s3PathLatest)
+						core.debug(`Uploading file to latest: ${s3PathLatest}`)
 						await s3.upload(fullPath, s3PathLatest)
 					}
 				} else {
