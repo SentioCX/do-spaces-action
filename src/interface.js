@@ -24,36 +24,26 @@ class S3Interface {
 	}
 
 	async upload(file, path) {
-		return new Promise((resolve, reject) => {
+		const fileStream = fs.createReadStream(file)
 
-			const fileStream = fs.createReadStream(file)
+		const contentType = lookup(file) || 'text/plain'
+		const params = {
+			Body: fileStream,
+			Bucket: this.bucket,
+			Key: path.replace(/\\/g, '/'),
+			ACL: this.permission,
+			ContentType: contentType
+		}
 
-			const contentType = lookup(file) || 'text/plain'
-			const options = {
-				Body: fileStream,
-				Bucket: this.bucket,
-				Key: path.replace(/\\/g, '/'),
-				ACL: this.permission,
-				ContentType: contentType
-			}
-
-			const isMatchingGzipFileType = this.gzipFileTypes.some(
+		const isMatchingGzipFileType = this.gzipFileTypes.some(
         (fileType) => fileType === contentType
-			)
-			core.debug(`File name = ${ file } with content type = ${ contentType } is matching gzip file type ${ isMatchingGzipFileType }`)
-			if (isMatchingGzipFileType) {
-				options.ContentEncoding = 'gzip'
-			}
+		)
+		core.debug(`File name = ${ file } with content type = ${ contentType } is matching gzip file type ${ isMatchingGzipFileType }`)
+		if (isMatchingGzipFileType) {
+			params.ContentEncoding = 'gzip'
+		}
 
-
-			this.s3.upload(options, (err, data) => {
-				if (err) {
-					return reject(err)
-				}
-
-				resolve(data)
-			})
-		})
+		await this.s3.upload(params).promise()
 	}
 }
 
