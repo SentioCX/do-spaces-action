@@ -36,13 +36,13 @@ const run = async () => {
 		const fileName = path.basename(config.source)
 		const s3Path = path.join(outDir, fileName)
 
-		core.debug('Uploading file: ' + s3Path)
+		core.debug(`Uploading file: ${ s3Path }`)
 		await s3.upload(config.source, s3Path)
 
 		if (shouldVersion) {
 			const s3PathLatest = path.join(config.outDir, 'latest', fileName)
 
-			core.debug('Uploading file to latest: ' + s3PathLatest)
+			core.debug(`Uploading file to latest: ${ s3PathLatest }`)
 			await s3.upload(config.source, s3PathLatest)
 		}
 	} else {
@@ -58,13 +58,13 @@ const run = async () => {
 				if (stat.isFile()) {
 					const s3Path = path.join(outDir, path.relative(config.source, fullPath))
 
-					core.debug('Uploading file: ' + s3Path)
+					core.debug(`Uploading file: ${s3Path}`)
 					await s3.upload(fullPath, s3Path)
 
 					if (shouldVersion) {
 						const s3PathLatest = path.join(config.outDir, 'latest', path.relative(config.source, fullPath))
 
-						core.debug('Uploading file to latest: ' + s3PathLatest)
+						core.debug(`Uploading file to latest: ${s3PathLatest}`)
 						await s3.upload(fullPath, s3PathLatest)
 					}
 				} else {

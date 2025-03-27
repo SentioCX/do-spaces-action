@@ -1,4 +1,6 @@
-const AWS = require('aws-sdk')
+const { Upload } = require('@aws-sdk/lib-storage')
+const { S3 } = require('@aws-sdk/client-s3')
+
 const fs = require('fs')
 const { lookup } = require('mime-types')
 const core = require('@actions/core')
@@ -13,11 +15,13 @@ class S3Interface {
 		core.debug(`Using permission ${ this.permission }`)
 		core.debug(`Using gzip file types ${ this.gzipFileTypes }`)
 
-		const spacesEndpoint = new AWS.Endpoint(`${ config.region }.digitaloceanspaces.com`)
-		const s3 = new AWS.S3({
+		const spacesEndpoint = new URL(`${ config.region }.digitaloceanspaces.com`)
+		const s3 = new S3({
 			endpoint: spacesEndpoint,
-			accessKeyId: config.access_key,
-			secretAccessKey: config.secret_key
+			credentials: {
+				accessKeyId: config.access_key,
+				secretAccessKey: config.secret_key
+			}
 		})
 
 		this.s3 = s3
@@ -35,15 +39,16 @@ class S3Interface {
 			ContentType: contentType
 		}
 
-		const isMatchingGzipFileType = this.gzipFileTypes.some(
-        (fileType) => fileType === contentType
-		)
+		const isMatchingGzipFileType = this.gzipFileTypes.some((fileType) => fileType === contentType)
 		core.debug(`File name = ${ file } with content type = ${ contentType } is matching gzip file type ${ isMatchingGzipFileType }`)
 		if (isMatchingGzipFileType) {
 			params.ContentEncoding = 'gzip'
 		}
 
-		await this.s3.upload(params).promise()
+		await new Upload({
+			client: this.s3,
+			params
+		}).done()
 	}
 }
 
