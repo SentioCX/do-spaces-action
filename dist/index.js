@@ -38158,11 +38158,9 @@ class S3Interface {
 		core.debug(`Using permission ${ this.permission }`)
 		core.debug(`Using gzip file types ${ this.gzipFileTypes }`)
 
-		const spacesEndpoint = new URL(
-      `https://${ config.region }.digitaloceanspaces.com`
-		)
 		const s3 = new S3({
-			endpoint: spacesEndpoint,
+			forcePathStyle: false,
+			endpoint: `https://${ config.region }.digitaloceanspaces.com`,
 			region: config.awsRegion,
 			credentials: {
 				accessKeyId: config.access_key,
