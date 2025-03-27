@@ -20,6 +20,7 @@ class S3Interface {
 		)
 		const s3 = new S3({
 			endpoint: spacesEndpoint,
+			region: config.awsRegion,
 			credentials: {
 				accessKeyId: config.access_key,
 				secretAccessKey: config.secret_key

@@ -21,6 +21,10 @@ const config = {
 		key: 'space_region',
 		required: true
 	}),
+	awsRegion: getInput({
+		key: 'space_region',
+		default: 'eu-central-1'
+	}),
 	accessKey: getInput({
 		key: 'access_key',
 		required: true

@@ -23,6 +23,7 @@ const run = async () => {
 	const s3 = new S3({
 		bucket: config.spaceName,
 		region: config.spaceRegion,
+		awsRegion: config.awsRegion,
 		access_key: config.accessKey,
 		secret_key: config.secretKey,
 		permission: config.permission,

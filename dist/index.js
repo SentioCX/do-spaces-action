@@ -38069,6 +38069,10 @@ const config = {
 		key: 'space_region',
 		required: true
 	}),
+	awsRegion: getInput({
+		key: 'space_region',
+		default: 'eu-central-1'
+	}),
 	accessKey: getInput({
 		key: 'access_key',
 		required: true
@@ -38159,6 +38163,7 @@ class S3Interface {
 		)
 		const s3 = new S3({
 			endpoint: spacesEndpoint,
+			region: config.awsRegion,
 			credentials: {
 				accessKeyId: config.access_key,
 				secretAccessKey: config.secret_key
@@ -38459,6 +38464,7 @@ const run = async () => {
 	const s3 = new S3({
 		bucket: config.spaceName,
 		region: config.spaceRegion,
+		awsRegion: config.awsRegion,
 		access_key: config.accessKey,
 		secret_key: config.secretKey,
 		permission: config.permission,
