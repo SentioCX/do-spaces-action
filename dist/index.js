@@ -38070,7 +38070,7 @@ const config = {
 		required: true
 	}),
 	awsRegion: getInput({
-		key: 'space_region',
+		key: 'aws_region',
 		default: 'eu-central-1'
 	}),
 	accessKey: getInput({
